@@ -66,6 +66,9 @@ def _get_all_protocol_modifiers():
     protocols['theos-ht-1.0']['parameters']['scdm'] = deepcopy(protocols['theos-ht-1.0']['parameters']['default'])
     protocols['theos-ht-1.0']['parameters']['scdm']['num_bands_factor'] = 3.0
 
+    protocols['theos-ht-1.0']['parameters']['cw'] = deepcopy(protocols['theos-ht-1.0']['parameters']['default'])
+    protocols['theos-ht-1.0']['parameters']['cw']['num_bands_factor'] = 3.0
+
     # a protocol for testing purpose, decrease kmesh density & ecutoff
     testing = deepcopy(protocols['theos-ht-1.0'])
     testing['parameters']['fast']['kpoints_mesh_density'] = 0.3

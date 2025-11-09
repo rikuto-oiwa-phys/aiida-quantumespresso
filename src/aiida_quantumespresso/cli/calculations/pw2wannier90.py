@@ -29,6 +29,14 @@ SCDM_MODE = OverridableOption(
     help='Whether to use the SCDM algorithm to determine the UNK matrices.'
 )
 
+CW_MODE = OverridableOption(
+    '--cw-mode',
+    type=click.Choice(['no', 'isolated', 'erfc', 'gaussian']),
+    default='no',
+    show_default=True,
+    help='Whether to use the CW algorithm to determine the UNK matrices.'
+)
+
 WRITE_UNK = OverridableOption(
     '-u',
     '--write-unk',
@@ -44,6 +52,7 @@ WRITE_UNK = OverridableOption(
 @options.PARENT_FOLDER(required=True, help='RemoteData node containing the output of a PW NSCF calculation.')
 @NNKP_FILE()
 @SCDM_MODE()
+@CW_MODE()
 @WRITE_UNK()
 @options.MAX_NUM_MACHINES()
 @options.MAX_WALLCLOCK_SECONDS()
@@ -51,7 +60,7 @@ WRITE_UNK = OverridableOption(
 @options.DAEMON()
 @decorators.with_dbenv()
 def launch_calculation(
-    code, parent_folder, nnkp_file, scdm_mode, write_unk, max_num_machines, max_wallclock_seconds, with_mpi, daemon
+    code, parent_folder, nnkp_file, scdm_mode, cw_mode, write_unk, max_num_machines, max_wallclock_seconds, with_mpi, daemon
 ):
     """Run a Pw2wannier90Calculation with some sample parameters and the provided inputs."""
     from aiida.orm import Dict
@@ -71,6 +80,10 @@ def launch_calculation(
     if scdm_mode != 'no':
         parameters['INPUTPP']['scdm_proj'] = True
         parameters['INPUTPP']['scdm_entanglement'] = scdm_mode
+
+    if cw_mode != 'no':
+        parameters['INPUTPP']['cw_proj'] = True
+        parameters['INPUTPP']['cw_entanglement'] = cw_mode
 
     # In this command-line example, we always retrieve .amn, .mmn and .eig,
     # but we never retrieve the UNK files that are big
